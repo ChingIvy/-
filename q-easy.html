@@ -1,0 +1,304 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>模擬測驗 : 簡單</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"> 
+	<script src="js/jquery-3.4.1.min.js"></script>
+	<script src="bootstrap/js/bootstrap.min.js"></script>	
+  </head>
+<script>
+var probs=['int x = 30;int  y = 40; int z = 15;<br>z = (x > y)? x / z : y % z;<br>System.out.print(z);<br>',
+'int a = 50;int  b = 40; int c = 25;<br>if (a >= b) {<br>&nbsp; &nbsp;if (b != c) b += c;}<br>else<br>&nbsp; &nbsp;b -= c;<br>System.out.print(b);<br>',
+'int x = 20; int  y = 10; int z = 7;<br>switch(x / y){<br>case 1: &nbsp; &nbsp;System.out.print(y % z); &nbsp; &nbsp;break;<br>case 2:	&nbsp; &nbsp;System.out.print(x - y); &nbsp; &nbsp;break;<br>&nbsp; &nbsp; default : &nbsp; &nbsp;System.out.print(z + 2);}<br>',
+'int x = 17; int  y = 12; int z = 4;<br>if((x - y) > z)<br> &nbsp; &nbsp; z *= y;<br>else<br> &nbsp; &nbsp; z += x;<br>System.out.print(z)<br>'];
+//each question can give 4 hints from simple to detailed message
+var hints=['注意三元運算子','三元運算子與if ...else...對等','if (x > y) x / z else y % z','/ : 取整數部分 ， % : 取餘數',
+'注意 nested if','(b != c) 代表 b 不等於 c','b -= c 等同於 b = b - c','外層條件通過，才會進入內層',
+'注意 switch case','/ : 取整數部分','case 1 等同於 if(x / y == 1) ','default 等同於 else',
+'注意 if else','% : 為取餘數','z += x 等同於 z = z + x;','z *= y 等同於 z = z * y'];
+var ans=[10,65];
+var resptime=[0,0,0,0];
+var sc=0 ,t1=0, t2=0;
+var pi=localStorage.getItem('pi');
+var replyn=0;
+var x1,y1,z1;
+function check1(){
+	var feed="<font color=red><b>答錯了! </b></font>";
+	var cindex=0;
+	var y=document.getElementById('in1').value;
+	if(y==''){
+		feed="<font color=blue><b>本題還未作答喔! </b></font>"; 
+		}
+	else if (y==ans[pi]) {
+		if(y==ans[3]){
+			re.disabled=false;
+			alh.disabled=true;
+			ch.disabled=true;
+			feed="<font color=green><b>答對了! </b></font>"; 
+			sc=sc+25-replyn*3;
+			resptime[pi]=replyn;
+		}
+		else{
+			feed="<font color=green><b>答對了! </b></font>"; 
+			sc=sc+25-replyn*3;
+			resptime[pi]=replyn;
+			replyn=0; pi++; genprob();
+		}
+		document.getElementById('hint1').innerHTML= '';
+    }
+	else {  
+		cindex=(replyn>3)?pi*4+3:pi*4+replyn;
+        document.getElementById('hint1').innerHTML= hints[cindex];
+        replyn+=1;
+	}
+	document.getElementById('res').innerHTML=feed+" 分數 : "+sc+" ,答錯次數 : "+replyn;
+}
+function showallhints(){
+	//cindex=(replyn>3)?pi*4+3:pi*4+replyn;
+	t1++;
+	if(t1%2==1){
+		var msg='';
+		for(var i=pi*4;i<=pi*4+3;i++) 
+			msg+= "<li>"+hints[i];
+		document.getElementById('allhints').innerHTML= msg;
+	}
+	else{
+		document.getElementById('allhints').innerHTML= '';
+	}
+}
+function genprob(){ 
+	//randomize the initial value of varaibles, revise array content of probs and ans
+	//generate question #1
+	if (pi==0) {
+		var y=Math.floor(Math.random()*25)+2;
+		var x=Math.floor(Math.random()*25)+3;
+		var z=Math.floor(Math.random()*8)+2;
+		y1=y; x1=x; z1=z;
+		var quest1='int x = '+x+'; int  y = '+y+'; int z = '+z+';<br>z = (x > y) ? x / z : y % z;<br>System.out.print(z);<br>';
+		var ans1=(x>y)? Math.floor(x/z): y%z;
+		probs[0]=quest1;
+		ans[0]=ans1;  
+	}
+	//generate question #2
+	if (pi==1) {
+		var a=Math.floor(Math.random()*30)+10;
+		var b=Math.floor(Math.random()*20)+4;
+		var c=Math.floor(Math.random()*12)+1;
+		if(b==c){
+			b++;
+		}
+		y1=b; x1=a; z1=c;
+		var quest2='int a = '+a+'; int b = '+b+'; int c = '+c+';<br>if (a >= b) {<br>&nbsp; &nbsp;if (b != c) &nbsp; &nbsp;b += c;<br>}<br>else<br>&nbsp; &nbsp;b -= c;<br>System.out.print(b);<br>';
+		if (a>=b) {
+			if (b!=c) 
+				b+=c;
+		}
+		else
+			b-=c;
+		var ans2=b;
+		probs[1]=quest2;
+		ans[1]=ans2; 
+	}
+	if (pi==2) {
+		var y=Math.floor(Math.random()*25)+2;
+		var x=(Math.floor(Math.random()*4)+1)*y;
+		var z=Math.floor(Math.random()*8)+2;
+		y1=y; x1=x; z1=z;
+		var quest1='int x = '+x+'; int  y = '+y+'; int z = '+z+';<br>switch(x / y){<br>&nbsp; &nbsp; case 1:<br> &nbsp; &nbsp; &nbsp; &nbsp;System.out.print(y % z); &nbsp; &nbsp;break;<br>&nbsp; &nbsp; case 2:	<br>&nbsp; &nbsp; &nbsp; &nbsp;System.out.print(x - y); &nbsp; &nbsp;break;<br>&nbsp; &nbsp; default : <br>&nbsp; &nbsp; &nbsp; &nbsp;System.out.print(z + 2);<br>}<br>';
+		switch(parseInt(x/y)){
+			case 1: ans1=y%z; break;
+			case 2:	ans1=x-y; break;
+			default : ans1=z+2;
+		}
+		probs[2]=quest1;
+		ans[2]=ans1;  
+	}
+	if (pi==3) {
+		ne.disabled=true;
+		re.disabled=false;
+		var y=Math.floor(Math.random()*25)+2;
+		var x=Math.floor(Math.random()*30)+15;
+		var z=Math.floor(Math.random()*8)+2;
+		y1=y; x1=x; z1=z;
+		var quest1='int x = '+x+'; int  y = '+y+'; int z = '+z+';<br>if((x - y) > z)<br> &nbsp; &nbsp; z *= y;<br>else<br> &nbsp; &nbsp; z += x;<br>System.out.print(z);<br>';
+		var ans1=((x - y) > z)? y*z: x+z;
+		probs[3]=quest1;
+		ans[3]=ans1;  
+	}
+	if (pi<probs.length)
+		document.getElementById("pr1").innerHTML=probs[pi];
+}
+function reset() {
+	alh.disabled=false;
+	re.disabled=true;
+	ch.disabled=false;
+	ne.disabled=false;
+	sc=0;
+	pi=replyn=0;
+	document.getElementById('in1').value='';
+	document.getElementById('allhints').innerHTML= "";
+	document.getElementById('res').innerHTML='';
+	document.getElementById('hint1').innerHTML='';
+	genprob();
+}
+function showperformance(){
+	t2++;
+	if(t2%2==1){
+		var results="<b>答錯次數</b><br>";
+		for(var i=0;i<=probs.length-1;i++)
+			results=results+'第 '+eval(i+1)+' 題答錯 : '+resptime[i]+"次<br>";
+		document.getElementById('perf1').innerHTML= results;
+	}
+	else{
+		document.getElementById('perf1').innerHTML= '';
+	}
+}
+function sbl1(){
+	//under writing
+	if (pi==0){
+		localStorage.setItem("x0",x1);
+		localStorage.setItem("y0",y1);
+		localStorage.setItem("z0",z1);
+		window.location='q1.html';
+	}
+	else if(pi==1){
+		localStorage.setItem("x0",x1);
+		localStorage.setItem("y0",y1);
+		localStorage.setItem("z0",z1);
+		window.location='q2.html';
+	}
+	else if(pi==2){
+		localStorage.setItem("x0",x1);
+		localStorage.setItem("y0",y1);
+		localStorage.setItem("z0",z1);
+		window.location='q3.html';
+	}
+	else{
+		localStorage.setItem("x0",x1);
+		localStorage.setItem("y0",y1);
+		localStorage.setItem("z0",z1);
+		window.location='q4.html';
+	}
+}
+function next(){
+ feed="<font color=blue><b>上一題未作答! </b></font>"; 
+ sc=sc+0;
+ resptime[pi]=replyn;
+ replyn=0; 
+ pi++; 
+ genprob();
+ document.getElementById('hint1').innerHTML= '';
+ document.getElementById('res').innerHTML=feed+" 分數 : "+sc+" ,答錯次數 : "+replyn;
+ if(pi==3){
+   ne.disabled=true;
+   re.disabled=false;
+ }
+}
+</script>
+
+<body onload="genprob();" style="background:#F3F3FA">
+<nav class="navbar navbar-expand-lg navbar-light" style="background:#A3D1D1">
+	  <a class="navbar-brand"><b>Selection</b></a>
+	  <button class="navbar-toggler" type="button" 
+	          data-toggle="collapse" data-target="#navbarNavDropdown" 
+	          aria-controls="navbarNavDropdown" aria-expanded="false" 
+			  aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	  </button>
+	  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+		<ul class="navbar-nav">
+		  <li class="nav-item active">
+			<a class="nav-link" href="home.html">首頁<span class="sr-only">(current)</span></a>
+		  </li>
+		  <li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" 
+			   role="button" data-toggle="dropdown" aria-haspopup="true" 
+			   aria-expanded="false">
+			  基本概念模擬
+			</a>
+			<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+			  <a class="dropdown-item" href="if.html">if</a>
+			  <a class="dropdown-item" href="nested.html">nested if</a>
+			  <a class="dropdown-item" href="switch.html">switch case</a>
+			  <a class="dropdown-item" href="conditionaloperator.html">conditional operator</a>			  
+			</div>		
+		  </li>		
+		  <li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" 
+			   role="button" data-toggle="dropdown" aria-haspopup="true" 
+			   aria-expanded="false">
+			  解題模擬
+			</a>
+			<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+			  <a class="dropdown-item" href="s1-1.html">長方形/正方形判斷</a>
+			  <a class="dropdown-item" href="s2-1.html">二數比大小</a>
+			  <a class="dropdown-item" href="s3-1.html">三數比大小</a>
+			  <a class="dropdown-item" href="s4-1.html">交換</a>		
+			  <a class="dropdown-item" href="s5-1.html">奇偶數</a>
+			  <a class="dropdown-item" href="s6-1.html">等第</a>			  
+			</div>		
+		  </li>	
+		  <li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" 
+			   role="button" data-toggle="dropdown" aria-haspopup="true" 
+			   aria-expanded="false">
+			  模擬測驗
+			</a>
+			<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+			  <a class="dropdown-item" href="q4-1.html">簡單</a>
+			  <a class="dropdown-item" href="q4-1.html">困難</a>				
+			</div>		
+		  </li>		
+		</ul>			
+	  </div>
+	</nav>
+<hr color=#A3D1D1>
+<font color=green><b>模擬測驗 --- 簡單</b></font>
+<p align=center>
+<table border=3 width=380 height=250>
+<tr>
+<td align=center>
+<b>追蹤程式執行結果</b>
+</td>
+</tr>
+<tr>
+<td align=left>
+<b><font color=#4F9D9D size=4><span id='pr1'></span></font></b>
+</td>
+</tr>
+</table><br>
+上述程式執行結果會顯示: <input type=txt id='in1' size=12><br><br>
+<button type="button" onclick="check1();" id=ch class="btn btn-info btn-sm">check answer</button>&nbsp;
+<button type="button" onclick="next();" id=ne class="btn btn-info btn-sm">next question</button>&nbsp;
+<button type="button" onclick="reset();" class="btn btn-info btn-sm" id=re disabled>re-challenge</button>&nbsp;
+<button type="button" onclick="sbl1();" class="btn btn-info btn-sm">help me!</button><br><br>
+<span id=res></span><br>
+<font color=red><span id='hint1'></span></font><br>
+<hr width=500 color=#A3D1D1>
+</p>
+<p align=center>
+<button onclick="showallhints();" id=alh class="btn btn-outline-secondary btn-sm">show all hints</button> &nbsp;
+<button onclick="showperformance();" class="btn btn-outline-secondary btn-sm">show performance</button><br>
+<br>
+<table border=0>
+<tr>
+<td>
+<ul>
+<span id=allhints></span>
+</ul>
+</td>
+</tr>
+</table>
+<span align=center id='perf1'></span><br>
+<table>
+<tr>
+<td width='380'><a href="q3-1.html"><< 前一篇: 解題模擬6 --- 等第</a></td>
+<td width='380' align=middle><a href="home.html">[首頁: 教學目錄]</a></td>
+<td width='380' align=right><a href="q4-1.html">下一篇: 模擬測驗 --- 困難>></a></td>
+</tr>
+</table>
+</p>
+</body>
+</html>

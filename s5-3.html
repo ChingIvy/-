@@ -1,0 +1,412 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>解題模擬5 --- 奇偶數 : switch case</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"> 
+	<script src="js/jquery-3.4.1.min.js"></script>
+	<script src="bootstrap/js/bootstrap.min.js"></script>	
+  </head>
+<script>
+var sec=7,sr=1,x;
+var stepn=-1, ann=-1;
+var tid;//timer id
+var rate=1;//store speed weight after selection
+var codeid=['s1','s2','s3','s4','s5','s6','s7'];
+var javaid=['c1','c2','c3','c4','c5','c6','c7'];
+var rid=['p1','p2','p3'];
+var ctx;
+var words = ['設定需要的變數','建立Scanner物件','輸出並提示使用者輸入x','接收使用者輸入並放入變數x','case x % 2 == 1','輸出 "x 為奇數" , break;','輸出 "x 為偶數"'];
+function init(){
+    //draw trace code
+    var c = document.getElementById("cs1");
+    ctx = c.getContext("2d");
+    ctx.scale(2,2);
+    ctx.font = "8px Arial";
+    ctx.textAlign = 'center';
+
+    ctx.beginPath();
+    ctx.moveTo(75, 10);
+    ctx.lineTo(75, 20);
+    ctx.stroke();
+    ctx.closePath();
+    for(var i=0; i<7; i++){
+		if(i!=5){
+			if(i!=6){
+			ctx.beginPath();
+			ctx.moveTo(75, 35+i*25);
+			ctx.lineTo(75, 45+i*25);
+			ctx.stroke();
+			ctx.closePath();
+			}
+		}
+		if(i==4){
+			ctx.beginPath();
+            ctx.moveTo(75, 120);
+            ctx.lineTo(140, 125);
+            ctx.lineTo(75, 135);
+            ctx.lineTo(10, 125);
+            ctx.closePath();
+            ctx.stroke();
+            ctx.fillText(words[i], 75, 30+i*25);
+		}
+		else if(i==5){
+			ctx.strokeRect(165, 20+(i-1)*25, 120, 15);
+            ctx.fillText(words[i], 225, 30+(i-1)*25);
+		}
+		else if(i==6){
+			ctx.strokeRect(165, 20+(i-1)*25, 120, 15);
+            ctx.fillText(words[i], 225, 30+(i-1)*25);
+		}
+		else{
+            ctx.strokeRect(10, 20+i*25, 130, 15);
+            ctx.fillText(words[i], 75, 30+i*25);
+		}
+    }
+	ctx.fillText("true", 140, 122);
+    ctx.fillText("false", 87, 142);
+	ctx.fillText("default", 140, 149);
+	ctx.beginPath();
+    ctx.moveTo(140, 125);
+    ctx.lineTo(165, 125);
+    ctx.moveTo(75, 152);
+    ctx.lineTo(165, 152);
+	ctx.moveTo(75, 152);
+    ctx.lineTo(75, 145);
+    ctx.stroke();
+    ctx.closePath();
+
+	ctx.beginPath();
+    ctx.moveTo(285, 125);
+    ctx.lineTo(295, 125);
+    ctx.moveTo(285, 150);
+    ctx.lineTo(295, 150);
+    ctx.moveTo(295, 125);
+    ctx.lineTo(295, 172);
+    ctx.stroke();
+    ctx.closePath();
+	
+	//起始箭頭
+    ctx.beginPath();
+    ctx.moveTo(75, 20);
+    ctx.lineTo(78, 16);
+    ctx.stroke();
+    ctx.closePath();
+    ctx.beginPath();
+    ctx.moveTo(75, 20);
+    ctx.lineTo(72, 16);
+    ctx.stroke();
+    ctx.closePath();
+
+    //起始點
+    ctx.beginPath();
+    ctx.arc(75,7,3,0,Math.PI*2);
+    ctx.stroke();
+    ctx.closePath();
+
+    //結尾箭頭
+    ctx.beginPath();
+    ctx.moveTo(295, 172);
+    ctx.lineTo(298, 168);
+    ctx.stroke();
+    ctx.closePath();
+    ctx.beginPath();
+    ctx.moveTo(295, 172);
+    ctx.lineTo(292, 168);
+    ctx.stroke();
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.arc(295,175.5,3,0,Math.PI*2);
+    ctx.stroke();
+    ctx.closePath();
+}
+
+function drawColor(n){
+    ctx.fillStyle = 'yellow';
+    if(n==4){
+		ctx.beginPath();
+		ctx.moveTo(75, 121);
+		ctx.lineTo(135, 125);
+		ctx.lineTo(75, 134);
+		ctx.lineTo(15, 125);
+		ctx.closePath();
+		ctx.fill();
+		ctx.fillStyle = 'red';
+		ctx.fillText(words[n], 75, 30+n*25);
+    }
+    else if(n==5){
+		ctx.fillRect(166, 21+(n-1)*25, 118, 13);
+		ctx.fillStyle = 'red';
+        ctx.fillText(words[n], 225, 30+(n-1)*25);
+    }
+	else if(n==6){
+		ctx.fillRect(166, 21+(n-1)*25, 118, 13);
+		ctx.fillStyle = 'red';
+        ctx.fillText(words[n], 225, 30+(n-1)*25);
+    }
+    else{
+        ctx.fillRect(11, 21+n*25, 128, 13);
+        ctx.fillStyle = 'red';
+        ctx.fillText(words[n], 75, 30+n*25);
+    }
+}
+function clearColor(n){       
+    if(n==4){
+		ctx.fillStyle = '#fff0f5';
+		ctx.beginPath();
+		ctx.moveTo(75, 121);
+		ctx.lineTo(135, 125);
+        ctx.lineTo(75, 134);
+        ctx.lineTo(15, 125);
+		ctx.closePath();
+		ctx.fill();
+        ctx.fillStyle = 'black';
+		ctx.fillText(words[n], 75, 30+n*25);
+    }
+    else if(n==5){
+        ctx.fillStyle = 'black';
+		ctx.clearRect(166, 21+(n-1)*25, 118, 13);
+        ctx.fillText(words[n], 225, 30+(n-1)*25);
+    }
+	else if(n==6){
+        ctx.fillStyle = 'black';
+		ctx.clearRect(166, 21+(n-1)*25, 118, 13);
+        ctx.fillText(words[n], 225, 30+(n-1)*25);
+    }
+    else{
+        ctx.fillStyle = 'black';
+        ctx.clearRect(11, 21+n*25, 128, 13);
+        ctx.fillText(words[n], 75, 30+n*25);
+    }
+}
+function getspeed(){
+for (var i=0;i<=2;i++)
+    if (document.getElementById(rid[i]).checked) 
+        sr=parseFloat(document.getElementById(rid[i]).value );//0.5 or 1 or 2
+}
+function start(){
+    x=document.getElementById('x').value;
+    if(x=='')
+	alert("x還未輸入數字喔!!");
+    else{
+        sec=codeid.length; ann=-1;
+        tid=window.setInterval("cshow();",sr*1000);
+        check();
+    }
+}
+function check(){
+    switch(x % 2){
+	case 1:
+	    document.getElementById('out').innerHTML="<font color=blue>" + x + "為奇數</font>";
+	    break;
+	default:
+	    document.getElementById('out').innerHTML="<font color=blue>" + x + "為偶數</font>";
+    }
+}
+function resettimer(){
+    window.clearInterval(tid);  
+    rate=1;sec=1;clearall() ;
+}
+//ann=-1;rate=1;
+function cshow(){
+    b1.disabled=true;
+    if (sec>0) {
+	if(( x % 2 )== 1){       
+	    if(ann<5){
+        	chshow(ann, ann+1);
+        	ann++;}
+	}
+	else{
+	    if(ann<4){
+        	chshow(ann, ann+1);
+        	ann++;}
+	    else if(ann==4){
+			chshow(4, -1);
+			ann++;
+        	chshow(ann, ann+1);}
+	}
+        sec=sec-rate; }
+    else if (sec==0){
+        chshow(ann, -1);sec=sec-rate; }
+    else     resettimer();
+}
+function chshow(pre,curr){
+    if (pre!=-1) { //recovery
+        document.getElementById(codeid[pre]).style.color="black";
+        document.getElementById(codeid[pre]).style.background="#fff0f5"; 
+        document.getElementById(javaid[pre]).style.color="black";
+        document.getElementById(javaid[pre]).style.background="#fff0f5";  
+        clearColor(pre);
+    }
+    if (curr!=-1) { //set
+        document.getElementById(codeid[curr]).style.color="red";
+        document.getElementById(codeid[curr]).style.background="yellow"; 
+        document.getElementById(javaid[curr]).style.color="red";
+        document.getElementById(javaid[curr]).style.background="yellow";    
+        drawColor(curr);
+    }
+}
+function stepshow(){
+    x=document.getElementById('x').value;
+    if(x=='')
+	alert("x還未輸入數字喔!!");
+    else{
+       if (stepn==codeid.length)
+            chshow(stepn, -1);
+        else  
+            chshow(stepn, stepn+1);
+	if (( x % 2 )== 1){
+	    if(stepn<4)
+			stepn++;
+	    else if(stepn==4)
+			b2.disabled=true;
+	}
+	else{
+		if(stepn<3)
+			stepn++;
+	    else if(stepn==3)
+			stepn+=2;
+	    else if(stepn==5){
+			chshow(4, -1);
+			b2.disabled=true;}
+	    }
+        check();
+    }
+}
+function clearall() {
+    document.getElementById('out').innerHTML='';
+    b1.disabled=false;
+    b2.disabled=false;
+    chshow(5, -1);
+    chshow(6, -1);
+    sec=codeid.length;
+    stepn=-1;
+    ann=-1;
+    rate=1;
+    resettimer();
+}
+</script>
+
+<body onload='init();' style="background:#fff0f5">
+<nav class="navbar navbar-expand-lg navbar-light" style="background:pink">
+	  <a class="navbar-brand"><b>Selection</b></a>
+	  <button class="navbar-toggler" type="button" 
+	          data-toggle="collapse" data-target="#navbarNavDropdown" 
+	          aria-controls="navbarNavDropdown" aria-expanded="false" 
+			  aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	  </button>
+	  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+		<ul class="navbar-nav">
+		  <li class="nav-item active">
+			<a class="nav-link" href="home.html">首頁<span class="sr-only">(current)</span></a>
+		  </li>
+		  <li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" 
+			   role="button" data-toggle="dropdown" aria-haspopup="true" 
+			   aria-expanded="false">
+			  基本概念模擬
+			</a>
+			<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+			  <a class="dropdown-item" href="if.html">if</a>
+			  <a class="dropdown-item" href="nested.html">nested if</a>
+			  <a class="dropdown-item" href="switch.html">switch case</a>
+			  <a class="dropdown-item" href="conditionaloperator.html">conditional operator</a>			  
+			</div>		
+		  </li>		
+		  <li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" 
+			   role="button" data-toggle="dropdown" aria-haspopup="true" 
+			   aria-expanded="false">
+			  解題模擬
+			</a>
+			<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+			  <a class="dropdown-item" href="s1-1.html">長方形/正方形判斷</a>
+			  <a class="dropdown-item" href="s2-1.html">二數比大小</a>
+			  <a class="dropdown-item" href="s3-1.html">三數比大小</a>
+			  <a class="dropdown-item" href="s4-1.html">交換</a>		
+			  <a class="dropdown-item" href="s5-1.html">奇偶數</a>
+			  <a class="dropdown-item" href="s6-1.html">等第</a>			  
+			</div>		
+		  </li>	
+		  <li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" 
+			   role="button" data-toggle="dropdown" aria-haspopup="true" 
+			   aria-expanded="false">
+			  模擬測驗
+			</a>
+			<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+			  <a class="dropdown-item" href="q4-1.html">簡單</a>
+			  <a class="dropdown-item" href="q4-1.html">困難</a>				
+			</div>		
+		  </li>		
+		</ul>			
+	  </div>
+	</nav>
+<hr color=pink>
+<b><font color=green>解題模擬5 --- 奇偶數 : </font></b>
+<a href="s5-1.html">[ if ]</a>
+<b><font color=green>[ switch case ]</font></b>
+<a href="s5-4.html">[ conditional operator ]</a><br><br> 
+<p align=center>
+<table border=3>
+<tr align=center bgcolor=pink>
+<th colspan=3><font size=5>switch case --- 奇偶數</font></th>
+</tr>
+<tr><td>
+<font size=4>
+<span id=s1>declare one variables<br></span>
+<span id=s2>create a Scanner object<br></span>  
+<span id=s3>input prompt for x</span> <br>
+<span id=s4>user input and assign to x</span><br> 
+<span id=s5>if case x mod 2 is equal to 1</span><br> 
+<span id=s6>print "x is odd" , break;</span><br>
+default(else)<br>
+<span id=s7>print "x is even"</span> <br>
+<td>
+<font size=4>
+<span id=c1>int x;<br></span> 
+<span id=c2>Scanner input = new Scanner(System.in);<br></span> 
+<span id=c3>System.out.print("請輸入一整數x：");</span><br> 
+<span id=c4>x = input.nextInt();<br></span>
+switch(x % 2){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<span id=c5>case 1: </span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span id=c6>System.out.print(x + " 為奇數");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br></span>
+&nbsp;&nbsp;&nbsp;&nbsp;default:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span id=c7>System.out.print(x + " 為偶數");</span><br>
+}
+</td>
+<td><canvas id='cs1' width='605' height='365'></canvas></td>
+</tr>
+<tr>
+<td colspan=3><b>執行結果</b><br>請輸入一整數x：<input type=text id=x style="width:50px;" value=3><br>
+<span id='out'></span><br><br></td>
+</tr>
+</table>
+</font><br>
+please select speed : 
+  <input type="radio" id="p1" name="rate" value="0.5" checked > high (0.5秒)
+  <input type="radio" id="p2" name="rate" value="1"> middle (1秒)
+  <input type="radio" id="p3" name="rate" value="2"> low (2秒)
+<button onclick="getspeed();" class="btn btn-secondary btn-sm">select speed</button><br><br>
+<button onclick="start();" id=b1 class="btn btn-secondary btn-sm">animation</button>
+<button onclick="stepshow();" id=b2 class="btn btn-secondary btn-sm">step by step</button>
+<button onclick="clearall();" class="btn btn-secondary btn-sm">clear all</button><br>
+<br>
+<table>
+<tr>
+<td width='380'><a href="s4-1.html"><< 前一篇: 解題模擬4 --- 交換</a></td>
+<td width='380' align=middle><a href="home.html">[首頁: 教學目錄]</a></td>
+<td width='380' align=right><a href="s6-1.html">下一篇: 解題模擬6 ---  等第>></a></td>
+</tr>
+</table>
+</p>
+</font>
+</body>
+</html>

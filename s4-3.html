@@ -1,0 +1,270 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>解題模擬4 --- 交換 : if</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"> 
+	<script src="js/jquery-3.4.1.min.js"></script>
+	<script src="bootstrap/js/bootstrap.min.js"></script>	
+  </head>
+<script>
+var sec=7,sr=1,x=0 ,y=0, z, a, b;
+var stepn=-1, ann=-1;
+var tid;//timer id
+var rate=1;//store speed weight after selection
+var codeid=['s1','s2','s3','s4','s5','s6','s7','s8','s9'];
+var javaid=['c1','c2','c3','c4','c5','c6','c7','c8','c9'];
+var rid=['p1','p2','p3'];
+var ctx;
+var words = ['設定需要的變數','輸出並指示使用者輸入x, y','接收使用者輸入並放入變數x, y','列印交換前x及y的值','x放入a','y放入b','a放入y','b放入x','列印交換後x及y的值'];
+function init(){
+    //draw trace code
+    var c = document.getElementById("cs1");
+    ctx = c.getContext("2d");
+    ctx.scale(2,2);
+    ctx.font = "8px Arial";
+    ctx.textAlign = 'center';
+
+    ctx.beginPath();
+    ctx.moveTo(75, 10);
+    ctx.lineTo(75, 20);
+    ctx.stroke();
+    ctx.closePath();
+    for(var i=0; i<9; i++){
+        ctx.beginPath();
+        ctx.moveTo(75, 35+i*25);
+        ctx.lineTo(75, 45+i*25);
+        ctx.stroke();
+        ctx.closePath();
+        ctx.strokeRect(10, 20+i*25, 130, 15);
+        ctx.fillText(words[i], 75, 30+i*25);
+    }
+    ctx.beginPath();
+    ctx.arc(75,247.5,3,0,Math.PI*2);
+    ctx.stroke();
+    ctx.closePath();
+}
+function drawColor(n){
+    ctx.fillStyle = 'yellow';
+    ctx.fillRect(11, 21+n*25, 128, 13);
+    ctx.fillStyle = 'red';
+    ctx.fillText(words[n], 75, 30+n*25);
+}
+function clearColor(n){       
+    ctx.fillStyle = 'black';
+    ctx.clearRect(11, 21+n*25, 128, 13);
+    ctx.fillText(words[n], 75, 30+n*25);
+}
+function getspeed(){
+for (var i=0;i<=2;i++)
+    if (document.getElementById(rid[i]).checked) 
+        sr=parseFloat(document.getElementById(rid[i]).value );//0.5 or 1 or 2
+}
+function start(){
+    x=parseInt(document.getElementById('x').value);
+    y=parseInt(document.getElementById('y').value);
+    if(x=='' && y=='')
+	alert("x,y皆還未輸入數字喔!!");
+    else if(x=='')
+	alert("x還未輸入數字喔!!");
+    else if(y=='')
+	alert("y還未輸入數字喔!!");
+    else if(x==y)
+	alert("請輸入「相異」整數喔!!");
+    else{
+        sec=codeid.length; ann=-1;
+        tid=window.setInterval("cshow();",sr*1000);
+        check();
+    }
+}
+function check(){
+     document.getElementById('out').innerHTML="<font color=blue>交換前: x = " + x + " y = " + y + "</font>";
+    a=x;
+    b=y;
+    y=a;
+    x=b;
+    document.getElementById('out1').innerHTML="<font color=blue>交換後: x = " + x + " y = " + y + "</font>";
+}
+function resettimer(){
+    window.clearInterval(tid);  
+    rate=1;sec=1;clearall() ;
+}
+//ann=-1;rate=1;
+function cshow(){
+    b1.disabled=true;
+     if (sec>0) {        
+        chshow(ann, ann+1);
+        ann++;
+        sec=sec-rate; }
+    else if (sec==0)
+        {chshow(ann, -1);sec=sec-rate; }
+   else     resettimer();
+}
+function chshow(pre,curr){
+    if (pre!=-1) { //recovery
+        document.getElementById(codeid[pre]).style.color="black";
+        document.getElementById(codeid[pre]).style.background="#fff0f5"; 
+        document.getElementById(javaid[pre]).style.color="black";
+        document.getElementById(javaid[pre]).style.background="#fff0f5";  
+        clearColor(pre);
+    }
+    if (curr!=-1) { //set
+        document.getElementById(codeid[curr]).style.color="red";
+        document.getElementById(codeid[curr]).style.background="yellow"; 
+        document.getElementById(javaid[curr]).style.color="red";
+        document.getElementById(javaid[curr]).style.background="yellow";    
+        drawColor(curr);
+    }
+}
+function stepshow(){
+    x=parseInt(document.getElementById('x').value);
+    y=parseInt(document.getElementById('y').value);
+    if(x=='' && y=='')
+	alert("x,y皆還未輸入數字喔!!");
+    else if(x=='')
+	alert("x還未輸入數字喔!!");
+    else if(y=='')
+	alert("y還未輸入數字喔!!");
+    else if(x==y)
+	alert("請輸入「相異」整數喔!!");
+    else{
+       if (stepn==codeid.length)
+            chshow(stepn, -1);
+        else  
+            chshow(stepn, stepn+1);
+        if (stepn<codeid.length)stepn++;
+        check();
+    }
+}
+function clearall() {
+    document.getElementById('out').innerHTML='';
+    document.getElementById('out1').innerHTML='';
+    b1.disabled=false;
+    b2.disabled=false;
+    sec=codeid.length;
+    stepn=-1;
+    ann=-1;
+    rate=1;
+    resettimer();
+}
+</script>
+
+<body onload='init();' style="background:#fff0f5">
+<nav class="navbar navbar-expand-lg navbar-light" style="background:pink">
+	  <a class="navbar-brand"><b>Selection</b></a>
+	  <button class="navbar-toggler" type="button" 
+	          data-toggle="collapse" data-target="#navbarNavDropdown" 
+	          aria-controls="navbarNavDropdown" aria-expanded="false" 
+			  aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	  </button>
+	  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+		<ul class="navbar-nav">
+		  <li class="nav-item active">
+			<a class="nav-link" href="home.html">首頁<span class="sr-only">(current)</span></a>
+		  </li>
+		  <li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" 
+			   role="button" data-toggle="dropdown" aria-haspopup="true" 
+			   aria-expanded="false">
+			  基本概念模擬
+			</a>
+			<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+			  <a class="dropdown-item" href="if.html">if</a>
+			  <a class="dropdown-item" href="nested.html">nested if</a>
+			  <a class="dropdown-item" href="switch.html">switch case</a>
+			  <a class="dropdown-item" href="conditionaloperator.html">conditional operator</a>			  
+			</div>		
+		  </li>		
+		  <li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" 
+			   role="button" data-toggle="dropdown" aria-haspopup="true" 
+			   aria-expanded="false">
+			  解題模擬
+			</a>
+			<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+			  <a class="dropdown-item" href="s1-1.html">長方形/正方形判斷</a>
+			  <a class="dropdown-item" href="s2-1.html">二數比大小</a>
+			  <a class="dropdown-item" href="s3-1.html">三數比大小</a>
+			  <a class="dropdown-item" href="s4-1.html">交換</a>		
+			  <a class="dropdown-item" href="s5-1.html">奇偶數</a>
+			  <a class="dropdown-item" href="s6-1.html">等第</a>			  
+			</div>		
+		  </li>	
+		  <li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" 
+			   role="button" data-toggle="dropdown" aria-haspopup="true" 
+			   aria-expanded="false">
+			  模擬測驗
+			</a>
+			<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+			  <a class="dropdown-item" href="q4-1.html">簡單</a>
+			  <a class="dropdown-item" href="q4-1.html">困難</a>				
+			</div>		
+		  </li>		
+		</ul>			
+	  </div>
+	</nav>
+<hr color=pink bgcolor=pink>
+<b><font color=green>解題模擬4 --- 交換</font></b>
+<a href="s4-1.html">[ method1 ]</a> 
+<a href="s4-2.html">[ method2 ]</a>
+<b><font color=green>[ method3 ]</font></b><br><br>
+<p align=center>
+<table border=3>
+<tr align=center bgcolor=pink>
+<th colspan=3><font size=5>method3 --- 交換</font></th>
+</tr>
+<tr><td>
+<font size=4>
+<span id=s1>declare three variables</span><br> 
+<span id=s2>input prompt for x, y</span> <br>
+<span id=s3>user input and assign to x, y</span><br> 
+<span id=s4>print x and y value before change</span><br> 
+<span id=s5>put x into a</span><br>
+<span id=s6>put y into b</span><br>
+<span id=s7>put a into y</span><br>
+<span id=s8>put b into x</span><br>
+<span id=s9>print x and y after change</span><br>
+<td>
+<font size=4>
+<span id=c1>int x, y, temp;</span><br> 
+<span id=c2>System.out.print("請輸入兩個相異整數x, y：");</span><br> 
+<span id=c3>x = input.nextInt();<br> 
+  y = input.nextInt();<br></span> 
+<span id=c4>System.out.println("交換前: x = " + x + " y = " + y);</span><br>
+<span id=c5>a = x;</span><br>
+<span id=c6>b = y;</span><br>
+<span id=c7>y = a;</span><br>
+<span id=c8>x = b;</span><br>
+<span id=c9>System.out.println("交換後 :x = " + x + " y = " + y);</span><br>
+</td>
+<td><canvas id='cs1' width='300' height='505'></canvas></td>
+</tr>
+<tr>
+<td colspan=3><b>執行結果</b><br>請輸入兩個相異整數x, y：<input type=text id=x style="width:50px;" value=2> <input type=text id=y style="width:50px;" value=3><br>
+<span id='out'></span><br><span id='out1'></span><br><br></td>
+</tr>
+</table>
+</font><br>
+please select speed : 
+  <input type="radio" id="p1" name="rate" value="0.5" checked > high (0.5秒)
+  <input type="radio" id="p2" name="rate" value="1"> middle (1秒)
+  <input type="radio" id="p3" name="rate" value="2"> low (2秒)
+<button onclick="getspeed();" class="btn btn-secondary btn-sm">select speed</button><br><br>
+<button onclick="start();" id=b1 class="btn btn-secondary btn-sm">animation</button>
+<button onclick="stepshow();" id=b2 class="btn btn-secondary btn-sm">step by step</button>
+<button onclick="clearall();" class="btn btn-secondary btn-sm">clear all</button><br>
+<br>
+<table>
+<tr>
+<td width='380'><a href="s3-1.html"><< 前一篇: 解題模擬3 --- 三數比大小</a></td>
+<td width='380' align=middle><a href="home.html">[首頁: 教學目錄]</a></td>
+<td width='380' align=right><a href="s5-1.html">下一篇: 解題模擬5 --- 奇偶數 >></a></td>
+</tr>
+</table>
+</p>
+</font>
+</body>
+</html>
